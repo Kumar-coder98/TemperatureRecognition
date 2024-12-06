@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Current Weather and Location</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    h1 {
+      color: #4CAF50;
+    }
+    p {
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Current Weather</h1>
+  <p id="location">Fetching your location...</p>
+  <p id="temperature">Fetching temperature...</p>
+
+  <script>
+    // Your API key for the Weather API (e.g., OpenWeatherMap)
+    const API_KEY = "your_openweather_api_key";
+
+    function fetchWeather(lat, lon) {
+      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`;
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          const location = data.name || "Unknown Location";
+          const temperature = data.main.temp;
+
+          document.getElementById("location").innerText = `Location: ${location}`;
+          document.getElementById("temperature").innerText = `Temperature: ${temperature}°C`;
+        })
+        .catch(error => {
+          document.getElementById("location").innerText = "Unable to fetch location.";
+          document.getElementById("temperature").innerText = "Unable to fetch temperature.";
+          console.error("Error fetching weather data:", error);
+        });
+    }
+
+    // Get user's location
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const { latitude, longitude } = position.coords;
+          fetchWeather(latitude, longitude);
+        },
+        error => {
+          document.getElementById("location").innerText = "Permission denied for location.";
+          document.getElementById("temperature").innerText = "Unable to fetch temperature.";
+          console.error("Geolocation error:", error);
+        }
+      );
+    } else {
+      document.getElementById("location").innerText = "Geolocation not supported by your browser.";
+      document.getElementById("temperature").innerText = "Unable to fetch temperature.";
+    }
+  </script>
+</body>
+</html>
