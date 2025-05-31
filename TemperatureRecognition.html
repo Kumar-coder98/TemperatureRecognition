@@ -1,68 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Current Weather and Location</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 50px;
-    }
-    h1 {
-      color: #4CAF50;
-    }
-    p {
-      font-size: 18px;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Weather App</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
-  <h1>Current Weather</h1>
-  <p id="location">Fetching your location...</p>
-  <p id="temperature">Fetching temperature...</p>
+  <div id="app">
+    <header>
+      <h1>Weather App</h1>
+      <p>Your comprehensive weather dashboard</p>
+    </header>
 
-  <script>
-    // Your API key for the Weather API (e.g., OpenWeatherMap)
-    const API_KEY = "your_openweather_api_key";
+    <div class="search-bar" width="100%" align="center">
 
-    function fetchWeather(lat, lon) {
-      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`;
+      <form id="search-form" autocomplete="off" align="center">
+        <div style="position: relative; flex: 1 ; align : center ;">
+          <input id="city-input" type="text" placeholder="Search for a city..." />
 
-      fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          const location = data.name || "Unknown Location";
-          const temperature = data.main.temp;
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </div>
+        <button type="submit" align="center">Search</button>
+      </form>
+      <button class="location-btn" id="location-btn" title="Use current location" aria-label="Use current location" align="center">
+        <img
+          src="https://cdn-icons-png.freepik.com/256/11741/11741543.png?ga=GA1.1.610150482.1748688071&semt=ais_incoming" align="center"
+          alt="Location Icon" height="30" width="30" />
+      </button>
+    </div>
 
-          document.getElementById("location").innerText = `Location: ${location}`;
-          document.getElementById("temperature").innerText = `Temperature: ${temperature}°C`;
-        })
-        .catch(error => {
-          document.getElementById("location").innerText = "Unable to fetch location.";
-          document.getElementById("temperature").innerText = "Unable to fetch temperature.";
-          console.error("Error fetching weather data:", error);
-        });
-    }
+    <div id="loading" style="display:none; text-align:center; margin-bottom: 1rem;">
+      <div class="spinner"></div>
+      <div class="loading-text">Loading weather data...</div>
+    </div>
 
-    // Get user's location
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          const { latitude, longitude } = position.coords;
-          fetchWeather(latitude, longitude);
-        },
-        error => {
-          document.getElementById("location").innerText = "Permission denied for location.";
-          document.getElementById("temperature").innerText = "Unable to fetch temperature.";
-          console.error("Geolocation error:", error);
-        }
-      );
-    } else {
-      document.getElementById("location").innerText = "Geolocation not supported by your browser.";
-      document.getElementById("temperature").innerText = "Unable to fetch temperature.";
-    }
-  </script>
+    <div id="weather-container" style="display:none;">
+      <div class="weather-grid">
+        <div class="weather-card card" id="weather-card"></div>
+        <div class="forecast-card card" id="forecast-card"></div>
+      </div>
+      <div class="weather-details" id="weather-details"></div>
+    </div>
+
+    <footer>
+      <p>Powered by OpenWeatherMap API • Built with JavaScript</p>
+    </footer>
+  </div>
+  <div id="toast-container" style="
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+"></div>
+
+  <script src="script.js"></script>
+
 </body>
+
 </html>
